@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ростов-на-Дону</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+<style>
+html,body,#m{margin:0;height:100%;background:#161616}
+.leaflet-container{background:#161616;cursor:grab}
+.leaflet-container.leaflet-dragging,.leaflet-dragging .leaflet-grab{cursor:grabbing}
+.leaflet-tile-pane{filter:grayscale(1) invert(1) brightness(.78) contrast(1.15)}
+.leaflet-control-attribution{background:rgba(22,22,22,.72)!important;color:#8a8a88!important;font:9.5px/1.5 ui-monospace,Menlo,monospace;padding:2px 8px!important;border-radius:8px 0 0 0}
+.leaflet-control-attribution a{color:#b8b8b6!important}
+.pin-wrap{background:none;border:0}
+.pin{position:relative;width:0;height:0}
+.pin b,.pin i{position:absolute;border-radius:50%;background:var(--c)}
+.pin b{left:-9px;top:-9px;width:18px;height:18px;animation:pulse 2.2s cubic-bezier(.2,.6,.3,1) infinite}
+.pin i{left:-6px;top:-6px;width:12px;height:12px;box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+.pin .lab{position:absolute;left:16px;top:-15px;white-space:nowrap;pointer-events:none}
+.pin .t{font:500 15px/1.2 Onest,system-ui,sans-serif;color:#F2F2F0}
+.pin .k{margin-top:2px;font:10.5px/1.3 'IBM Plex Mono',ui-monospace,monospace;color:#9A9A98}
+@keyframes pulse{from{transform:scale(1);opacity:.8}to{transform:scale(3.2);opacity:0}}
+@media (prefers-reduced-motion: reduce){.pin b{animation:none;opacity:0}}
+</style>
+</head>
+<body>
+<div id="m"></div>
+<script>
+const qs = new URLSearchParams(location.search), en = qs.get('lang') === 'en', c = qs.get('c') || '';
+document.documentElement.style.setProperty('--c', /^#[0-9a-f]{3,8}$/i.test(c) ? c : '#A9CBFF');
+const P = L.latLng(47.2357, 39.7015);
+const map = L.map('m', { zoomControl: false, scrollWheelZoom: false, doubleClickZoom: false, boxZoom: false, keyboard: false, touchZoom: false, inertia: true, inertiaDeceleration: 2400, maxBoundsViscosity: .8 }).setView(P, 11);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 19 }).addTo(map);
+map.attributionControl.setPrefix(false);
+L.marker(P, { interactive: false, keyboard: false, icon: L.divIcon({ className: 'pin-wrap', iconSize: [0, 0], html: '<div class="pin"><b></b><i></i><div class="lab"><div class="t">' + (en ? 'Rostov-on-Don' : 'Ростов-на-Дону') + '</div><div class="k">47.2357° N, 39.7015° E</div></div></div>' }) }).addTo(map);
+// Keep the pin (and its label) inside the card while the map is dragged
+function fence() {
+  const s = map.getSize(); if (!s.x || !s.y) return;
+  const z = map.getZoom(), p = map.project(P, z), lab = Math.min(170, s.x * .5);
+  const x0 = 22, x1 = Math.max(x0, s.x - 22 - lab), y0 = 30, y1 = Math.max(y0, s.y - 62);
+  map.setMaxBounds(L.latLngBounds(map.unproject(L.point(p.x - x1, p.y - y1), z), map.unproject(L.point(p.x - x0 + s.x, p.y - y0 + s.y), z)));
+}
+map.whenReady(fence);
+map.on('resize', fence);
+</script>
+</body>
+</html>
