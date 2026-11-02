@@ -737,7 +737,7 @@ class Component extends DCLogic {
   PTAGS = [['all', 'Все', 'All'], ['china', 'Китай', 'China'], ['nature', 'Природа', 'Nature'], ['arch', 'Архитектура', 'Architecture'], ['evening', 'Вечер', 'Evenings'], ['me', 'Я в кадре', 'Me'], ['cat', 'Котик', 'Cat']];
   BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
   // Общий счётчик реакций: URL эндпоинта (GET → {heart, bunny}; POST {kind} → {heart, bunny}). Пусто — счёт ведётся только в этом браузере.
-  RX_API = '';
+  RX_API = 'https://script.google.com/macros/s/AKfycbzNMV3jWt4KKZgExFNrcktdHsKc1szCPIP5-qMzjS5_L1i7_wrV-cEZ_clEy2xhOOgd/exec';
   RX = { heart: { colors: ['#F5B8CC', '#F8C9B4', '#CDB8F7', '#F3EFC9', '#EC8FB3'], mask: 'assets/icons/heart.svg' }, bunny: { colors: ['#A9CBFF', '#B4EBD3', '#CDB8F7', '#EEF4FF', '#7FB0FF'], mask: 'assets/icons/rabbit.svg' } };
   seenMd = new Set();
   seenLg = new Set();
@@ -984,7 +984,17 @@ class Component extends DCLogic {
     const mine = Object.assign({}, this.state.rxMine, { [kind]: true });
     try { localStorage.setItem('vl-portfolio-rx', JSON.stringify(mine)); } catch (err) {}
     this.setState(s => ({ rxMine: mine, rx: Object.assign({}, s.rx, { [kind]: (s.rx[kind] || 0) + 1 }) }), () => { if (fx && btn) fx.roll(btn.querySelector('[data-rx-num]')); });
-    if (this.RX_API) fetch(this.RX_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind }) }).then(r => r.json()).then(j => { if (j && j.heart != null) this.setState({ rx: { heart: +j.heart || 0, bunny: +j.bunny || 0 } }); }).catch(() => {});
+    // text/plain без заголовков: Apps Script не отвечает на CORS-preflight. id — анонимный ключ браузера, сервер считает его реакцию один раз.
+    if (this.RX_API) fetch(this.RX_API, { method: 'POST', body: JSON.stringify({ kind, id: this.visitorId() }) }).then(r => r.json()).then(j => { if (j && j.heart != null) this.setState({ rx: { heart: +j.heart || 0, bunny: +j.bunny || 0 } }); }).catch(() => {});
+  }
+  visitorId() {
+    let id = '';
+    try { id = localStorage.getItem('vl-visitor') || ''; } catch (e) {}
+    if (!id) {
+      id = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)).replace(/[^\w-]/g, '');
+      try { localStorage.setItem('vl-visitor', id); } catch (e) {}
+    }
+    return id;
   }
   reactHeart = e => this.react('heart', e);
   reactBunny = e => this.react('bunny', e);
