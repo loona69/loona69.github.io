@@ -129,9 +129,27 @@ input::placeholder,textarea::placeholder{color:#9A9A98}
     </div>
 
     <div data-reveal="up" data-intro="text">
-      <div style="display:flex; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid rgba(0,0,0,.14); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; letter-spacing:.07em; text-transform:uppercase; color:#6D6D6B"><span><sc-if value="{{ ru }}" hint-placeholder-val="{{ true }}">Опыт и учёба</sc-if><sc-if value="{{ en }}" hint-placeholder-val="{{ false }}">Experience &amp; study</sc-if></span><span>2021 — 2026</span></div>
+      <div style="display:flex; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid rgba(0,0,0,.14); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; letter-spacing:.07em; text-transform:uppercase; color:#6D6D6B"><span><sc-if value="{{ ru }}" hint-placeholder-val="{{ true }}">Опыт работы</sc-if><sc-if value="{{ en }}" hint-placeholder-val="{{ false }}">Experience</sc-if></span><span>2024 — 2026</span></div>
       <div onMouseLeave="{{ expLeave }}">
-        <sc-for list="{{ exp }}" as="x" hint-placeholder-count="5">
+        <sc-for list="{{ exp }}" as="x" hint-placeholder-count="3">
+          <div onMouseEnter="{{ x.enter }}" data-sound-hover="slide" style="position:relative; padding:20px 0; border-bottom:1px solid rgba(0,0,0,.1)">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; gap:16px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:15px">
+              <span><span style="color:#151515">{{ x.org }}</span><span style="color:#9A9A98"> / {{ x.role }}</span></span>
+              <span style="flex:none; font-size:13px; color:#7A7A78">{{ x.years }}</span>
+            </div>
+            <div style="display:grid; grid-template-rows:{{ x.rows }}; transition:grid-template-rows .5s cubic-bezier(.2,.8,.2,1)">
+              <div style="overflow:hidden"><p style="margin:0; padding-top:12px; max-width:580px; font-size:15px; line-height:1.55; color:#555553">{{ x.desc }}</p></div>
+            </div>
+            <span style="position:absolute; left:0; right:0; bottom:-1px; height:2px; background:linear-gradient(90deg, var(--c0,#A9CBFF), var(--c1,#CDB8F7), var(--c3,#F8C9B4)); transform:{{ x.line }}; transform-origin:left center; transition:transform .6s cubic-bezier(.2,.8,.2,1)"></span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div data-reveal="up" data-intro="text">
+      <div style="display:flex; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid rgba(0,0,0,.14); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; letter-spacing:.07em; text-transform:uppercase; color:#6D6D6B"><span><sc-if value="{{ ru }}" hint-placeholder-val="{{ true }}">Образование</sc-if><sc-if value="{{ en }}" hint-placeholder-val="{{ false }}">Education</sc-if></span><span>2021 — <sc-if value="{{ ru }}" hint-placeholder-val="{{ true }}">сейчас</sc-if><sc-if value="{{ en }}" hint-placeholder-val="{{ false }}">now</sc-if></span></div>
+      <div onMouseLeave="{{ expLeave }}">
+        <sc-for list="{{ edu }}" as="x" hint-placeholder-count="2">
           <div onMouseEnter="{{ x.enter }}" data-sound-hover="slide" style="position:relative; padding:20px 0; border-bottom:1px solid rgba(0,0,0,.1)">
             <div style="display:flex; justify-content:space-between; align-items:baseline; gap:16px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:15px">
               <span><span style="color:#151515">{{ x.org }}</span><span style="color:#9A9A98"> / {{ x.role }}</span></span>
@@ -534,8 +552,8 @@ class Component extends DCLogic {
     { org: 'Sebbia', role: ['Product Designer (UI/UX)', 'Product Designer (UI/UX)'], years: ['2024 — 2026', '2024 — 2026'], desc: ['Студия мобильной разработки из топ-10 России. Единственный дизайнер на редизайне билетной платформы Fanzilla для «Лужников» (B2B + B2C): сценарии покупки, админ-панель и дизайн-система для веба, мобайла и терминалов. Через 3 месяца получила повышение до младшего продуктового дизайнера.', 'A top-10 Russian mobile development studio. The only designer on the redesign of the Fanzilla ticketing platform for Luzhniki (B2B + B2C): purchase flows, an admin panel and a design system for web, mobile and kiosks. Promoted to junior product designer after 3 months.'] },
     { org: 'Sebbia', role: ['Практикант', 'Trainee'], years: ['2024', '2024'], desc: ['Проектировала веб-версию HR-платформы, описывала архитектуру базы данных и участвовала в разработке как программист. За 2 месяца перешла в штат стажёром-дизайнером, выбрав продуктовый дизайн основным направлением.', 'Designed the web version of an HR platform, described the database architecture and contributed to development as a programmer. Joined the staff as a design intern within 2 months, choosing product design as my main path.'] },
     { org: ['Фриланс', 'Freelance'], role: ['Графический дизайнер', 'Graphic designer'], years: ['2024 — 2025', '2024 — 2025'], desc: ['4 дизайн-меню для кофеен по 7 дней на проект, 30+ баннеров и иллюстраций для Discord в 5+ форматах.', '4 coffee shop menus at 7 days per project, 30+ Discord banners and illustrations in 5+ formats.'] },
-    { org: ['ИОТ «Школа Икс»', 'School X (IOT)'], role: ['Студент', 'Student'], years: ['2025 — сейчас', '2025 — now'], desc: ['Высшее образование по направлению «Информационное моделирование в городском строительстве» — очно, в проектном формате. Участвую в грантах и стартапах.', 'A full-time, project-based degree in information modelling for urban construction. I take part in grants and startups.'] },
-    { org: ['Ростовский колледж связи и информатики', 'Rostov College of Communications & IT'], role: ['Студент, ИТ', 'Student, IT'], years: ['2021 — 2025', '2021 — 2025'], desc: ['Техническая специальность по направлению «Информационные технологии».', 'Technical diploma in information technology.'] }
+    { edu: 1, org: ['ИОТ «Школа Икс»', 'School X (IOT)'], role: ['Студент', 'Student'], years: ['2025 — сейчас', '2025 — now'], desc: ['Высшее образование по направлению «Информационное моделирование в городском строительстве» — очно, в проектном формате. Участвую в грантах и стартапах.', 'A full-time, project-based degree in information modelling for urban construction. I take part in grants and startups.'] },
+    { edu: 1, org: ['Ростовский колледж связи и информатики', 'Rostov College of Communications & IT'], role: ['Студент, ИТ', 'Student, IT'], years: ['2021 — 2025', '2021 — 2025'], desc: ['Техническая специальность по направлению «Информационные технологии».', 'Technical diploma in information technology.'] }
   ];
 
   FOLDERS = [
@@ -920,7 +938,8 @@ class Component extends DCLogic {
     const RG = '0 0 0 2px var(--c0,#A9CBFF), 0 0 0 7px rgba(169,203,255,.3)', R0 = '0 0 0 0 rgba(0,0,0,0)', R = s.rule;
     const rd = { ghostRows: R === 0 ? '1fr' : '0fr', ghostOp: R === 0 ? '1' : '0', helmetRing: R === 1 ? RG : R0, skateOp: R === 2 ? '.4' : '1', toastTf: R === 2 ? 'translateY(0px)' : 'translateY(14px)', toastOp: R === 2 ? '1' : '0', catRing: R === 3 ? RG : R0 };
 
-    const exp = this.EXP.map((x, i) => ({ org: L(x.org), role: L(x.role), years: L(x.years), desc: L(x.desc), rows: s.exp === i ? '1fr' : '0fr', line: s.exp === i ? 'scaleX(1)' : 'scaleX(0)', enter: () => this.setState({ exp: i }) }));
+    const expAll = this.EXP.map((x, i) => ({ edu: !!x.edu, org: L(x.org), role: L(x.role), years: L(x.years), desc: L(x.desc), rows: s.exp === i ? '1fr' : '0fr', line: s.exp === i ? 'scaleX(1)' : 'scaleX(0)', enter: () => this.setState({ exp: i }) }));
+    const exp = expAll.filter(x => !x.edu), edu = expAll.filter(x => x.edu);
 
     const SW = Math.max(240, s.stackW || 360), TAB = 36, STEP = 116, SH = STEP * (this.FOLDERS.length - 1) + 164, ROT = [-8, 5, -3];
     const fBg = ['#F1F1EF', '#E8E8E6', '#DFDFDD', '#D6D6D4', '#CCCCCA'];
@@ -1020,7 +1039,7 @@ class Component extends DCLogic {
       openContact: this.openContact, closeContact: this.closeContact, stop: this.stop,
       roles, words, tapeA: [...tA, ...tA], tapeB: [...tB, ...tB, ...tB, ...tB],
       c1: cs[0], c2: cs[1], caseLeave: this.caseLeave, curCase: T('Открыть кейс', 'Open case'),
-      exp, expLeave: this.expLeave, skills: this.SKILLS[ru ? 0 : 1],
+      exp, edu, expLeave: this.expLeave, skills: this.SKILLS[ru ? 0 : 1],
       plEnter: this.plEnter, plLeave: this.plLeave, ...(() => {
         const n = this.TRACKS.length, i = s.plIdx % n, tr = this.TRACKS[i], p2 = v => String(v).padStart(2, '0'), fm = v => Math.floor(v / 60) + ':' + p2(v % 60);
         const pl = (v) => ru ? (v % 10 === 1 && v % 100 !== 11 ? ' трек' : v % 10 >= 2 && v % 10 <= 4 && (v % 100 < 10 || v % 100 >= 20) ? ' трека' : ' треков') : (v === 1 ? ' track' : ' tracks');
